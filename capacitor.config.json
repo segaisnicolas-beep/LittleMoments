@@ -1,0 +1,8 @@
+{
+  "appId": "com.littlemoments.app",
+  "appName": "LittleMoments",
+  "webDir": "www",
+  "android": {
+    "backgroundColor": "#D9EEE3"
+  }
+}

@@ -1,0 +1,41 @@
+name: Fabriquer LittleMoments (Android)
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - name: Installer les outils
+        run: npm ci
+
+      - name: Créer le projet Android
+        run: |
+          npx cap add android
+          npx capacitor-assets generate --android --assetPath assets
+          npx cap sync android
+
+      - name: Fabriquer le fichier d'installation (APK)
+        working-directory: android
+        run: ./gradlew assembleDebug --no-daemon
+
+      - name: Mettre l'APK à disposition
+        uses: actions/upload-artifact@v4
+        with:
+          name: LittleMoments-apk
+          path: android/app/build/outputs/apk/debug/app-debug.apk
